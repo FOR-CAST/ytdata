@@ -1,0 +1,23 @@
+Package: ytdata
+Title: Fetch Yukon Open Geospatial Data
+Version: 0.0.0.9000
+Authors@R:
+    person("Alex M.", "Chubaty", , "achubaty@for-cast.ca", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-7146-8135"))
+Description: Lightweight helpers to fetch Government of Yukon open geospatial
+    data from the GeoYukon ArcGIS REST services as 'sf' objects, with a small
+    registry of commonly used layers (there is no 'bcdata'-style package for
+    Yukon).
+License: Apache License (>= 2)
+URL: https://github.com/FOR-CAST/ytdata
+BugReports: https://github.com/FOR-CAST/ytdata/issues
+Imports:
+    cli,
+    httr2,
+    sf
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.0.0
