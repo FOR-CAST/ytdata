@@ -1,5 +1,24 @@
 geoyukon_base <- "https://mapservices.gov.yk.ca/arcgis/rest/services/GeoYukon"
 
+#' Build the URL of a GeoYukon `MapServer` layer
+#'
+#' Return the REST endpoint of a layer of a GeoYukon `MapServer` service,
+#' `<GeoYukon base>/<service>/MapServer/<layer>`. [yt_arcgis_fetch()] queries
+#' this endpoint (at `/query`); use `yt_layer_url()` to refer to the same layer
+#' without copying the GeoYukon base URL.
+#'
+#' @inheritParams yt_arcgis_fetch
+#'
+#' @return A character vector of layer URLs, vectorised over `service` and
+#'   `layer`. `layer` is converted with [as.integer()].
+#' @export
+#' @examples
+#' yt_layer_url("GY_Biological", 1)
+#' yt_layer_url("GY_Biological", 0:2)
+yt_layer_url <- function(service, layer) {
+  paste0(geoyukon_base, "/", service, "/MapServer/", as.integer(layer))
+}
+
 #' Fetch a GeoYukon ArcGIS REST layer as an `sf` object
 #'
 #' Query one layer of a GeoYukon `MapServer` service and return its features as
@@ -39,7 +58,7 @@ yt_arcgis_fetch <- function(
   page_size = 1000L,
   quiet = FALSE
 ) {
-  url <- paste0(geoyukon_base, "/", service, "/MapServer/", layer, "/query")
+  url <- paste0(yt_layer_url(service, layer), "/query")
   out_fields <- paste(out_fields, collapse = ",")
 
   query <- list(

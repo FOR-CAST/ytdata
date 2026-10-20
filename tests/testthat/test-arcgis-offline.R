@@ -1,6 +1,26 @@
 ## Offline tests: requests are answered by mocked httr2 responses (see
 ## helper-geojson.R), so none of these tests touches the network.
 
+test_that("yt_layer_url() builds GeoYukon MapServer layer URLs", {
+  expect_equal(
+    yt_layer_url("GY_Mining", 36),
+    "https://mapservices.gov.yk.ca/arcgis/rest/services/GeoYukon/GY_Mining/MapServer/36"
+  )
+
+  urls <- yt_layer_url(c("GY_Mining", "GY_Biological"), c(36, 1))
+  expect_length(urls, 2L)
+  expect_equal(
+    urls,
+    c(
+      "https://mapservices.gov.yk.ca/arcgis/rest/services/GeoYukon/GY_Mining/MapServer/36",
+      "https://mapservices.gov.yk.ca/arcgis/rest/services/GeoYukon/GY_Biological/MapServer/1"
+    )
+  )
+
+  ## as.integer() keeps a large id out of scientific notation
+  expect_match(yt_layer_url("GY_Mining", 1e5), "/MapServer/100000$")
+})
+
 test_that("yt_arcgis_fetch() queries <GeoYukon base>/<service>/MapServer/<layer>/query", {
   seen <- local_geojson_mock()
 

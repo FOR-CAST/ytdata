@@ -1,3 +1,7 @@
+# ytdata 0.0.0.9001
+
+* New `yt_layer_url()` builds the GeoYukon `MapServer` layer URL for a service and layer id (vectorised), so other code need not copy the GeoYukon base URL. `yt_arcgis_fetch()` now builds its request URL with it.
+
 # ytdata 0.0.0.9000
 
 * Initial version.
