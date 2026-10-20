@@ -20,10 +20,15 @@ geojson_response <- function(features = character()) {
   )
 }
 
-## Answer the n-th request with `respond(n)`. The returned environment holds the URLs
-## requested so far in `$urls`. More than 10 requests is an error, so that a paging
-## regression fails a test instead of looping.
-local_geojson_mock <- function(respond = \(n) geojson_response(), env = parent.frame()) {
+## Answer the n-th request with `respond(n)`, which must return an httr2 response (httr2
+## sends the real request when a mock returns NULL). The default answers every request with
+## a one-point FeatureCollection. The returned environment holds the URLs requested so far
+## in `$urls`. More than 10 requests is an error, so that a paging regression fails a test
+## instead of looping.
+local_geojson_mock <- function(
+  respond = \(n) geojson_response(geojson_point(1)),
+  env = parent.frame()
+) {
   seen <- new.env(parent = emptyenv())
   seen$urls <- character()
   httr2::local_mocked_responses(
@@ -32,7 +37,11 @@ local_geojson_mock <- function(respond = \(n) geojson_response(), env = parent.f
       if (length(seen$urls) > 10L) {
         stop("runaway paging: more than 10 requests")
       }
-      respond(length(seen$urls))
+      resp <- respond(length(seen$urls))
+      if (!inherits(resp, "httr2_response")) {
+        stop("the mock handler must return an httr2 response, not ", class(resp)[[1]])
+      }
+      resp
     },
     env = env
   )

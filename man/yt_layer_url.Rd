@@ -13,7 +13,8 @@ yt_layer_url(service, layer)
 }
 \value{
 A character vector of layer URLs, vectorised over \code{service} and
-\code{layer}. \code{layer} is converted with \code{\link[=as.integer]{as.integer()}}.
+\code{layer} (zero-length input gives \code{character(0)}). \code{layer} is converted with
+\code{\link[=as.integer]{as.integer()}}.
 }
 \description{
 Return the REST endpoint of a layer of a GeoYukon \code{MapServer} service,

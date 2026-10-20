@@ -10,13 +10,14 @@ geoyukon_base <- "https://mapservices.gov.yk.ca/arcgis/rest/services/GeoYukon"
 #' @inheritParams yt_arcgis_fetch
 #'
 #' @return A character vector of layer URLs, vectorised over `service` and
-#'   `layer`. `layer` is converted with [as.integer()].
+#'   `layer` (zero-length input gives `character(0)`). `layer` is converted with
+#'   [as.integer()].
 #' @export
 #' @examples
 #' yt_layer_url("GY_Biological", 1)
 #' yt_layer_url("GY_Biological", 0:2)
 yt_layer_url <- function(service, layer) {
-  paste0(geoyukon_base, "/", service, "/MapServer/", as.integer(layer))
+  paste0(geoyukon_base, "/", service, "/MapServer/", as.integer(layer), recycle0 = TRUE)
 }
 
 #' Fetch a GeoYukon ArcGIS REST layer as an `sf` object

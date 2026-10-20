@@ -21,6 +21,10 @@ test_that("yt_layer_url() builds GeoYukon MapServer layer URLs", {
   expect_match(yt_layer_url("GY_Mining", 1e5), "/MapServer/100000$")
 })
 
+test_that("yt_layer_url() of zero-length input is character(0)", {
+  expect_equal(yt_layer_url(character(0), integer(0)), character(0))
+})
+
 test_that("yt_arcgis_fetch() queries <GeoYukon base>/<service>/MapServer/<layer>/query", {
   seen <- local_geojson_mock()
 
@@ -46,6 +50,8 @@ test_that("a bbox is sent as an envelope in bbox_crs, in xmin, ymin, xmax, ymax 
     bbox = c(xmin = -136, ymin = 61, xmax = -135, ymax = 62),
     quiet = TRUE
   )
+  ## The projected values are deliberately not round: paste() writes a round value
+  ## of 1e5 or more in scientific notation (e.g. "1e+05").
   yt_arcgis_fetch(
     "GY_Mining",
     36,
@@ -80,7 +86,7 @@ test_that("a bbox without four values is an error", {
 })
 
 test_that("no matching feature gives an empty sf in EPSG:4326", {
-  local_geojson_mock()
+  local_geojson_mock(\(n) geojson_response())
 
   x <- yt_arcgis_fetch("GY_Mining", 36, quiet = TRUE)
 
@@ -107,4 +113,13 @@ test_that("results are paged until a short page and bound together", {
   queries <- lapply(seen$urls, \(url) httr2::url_parse(url)$query)
   expect_equal(vapply(queries, \(q) q$resultOffset, character(1)), c("0", "2", "4"))
   expect_equal(vapply(queries, \(q) q$resultRecordCount, character(1)), rep("2", 3L))
+})
+
+test_that("a mock handler that returns no response errors instead of reaching the network", {
+  local_geojson_mock(\(n) NULL)
+
+  expect_error(
+    yt_arcgis_fetch("GY_Mining", 36, quiet = TRUE),
+    "must return an httr2 response"
+  )
 })
