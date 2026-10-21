@@ -11,6 +11,8 @@ Description: Lightweight helpers to fetch Government of Yukon open geospatial
 License: Apache License (>= 2)
 URL: https://github.com/FOR-CAST/ytdata
 BugReports: https://github.com/FOR-CAST/ytdata/issues
+Depends:
+    R (>= 4.1.0)
 Imports:
     cli,
     httr2 (>= 1.0.0),
