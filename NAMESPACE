@@ -3,4 +3,5 @@
 export(yt_arcgis_fetch)
 export(yt_get)
 export(yt_get_caribou_herds)
+export(yt_layer_url)
 export(yt_layers)
