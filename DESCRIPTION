@@ -1,6 +1,6 @@
 Package: ytdata
 Title: Fetch Yukon Open Geospatial Data
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R:
     person("Alex M.", "Chubaty", , "achubaty@for-cast.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-7146-8135"))
@@ -18,7 +18,8 @@ Imports:
     httr2 (>= 1.0.0),
     sf
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
