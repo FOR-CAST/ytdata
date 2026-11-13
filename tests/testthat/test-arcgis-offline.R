@@ -50,8 +50,6 @@ test_that("a bbox is sent as an envelope in bbox_crs, in xmin, ymin, xmax, ymax 
     bbox = c(xmin = -136, ymin = 61, xmax = -135, ymax = 62),
     quiet = TRUE
   )
-  ## The projected values are deliberately not round: paste() writes a round value
-  ## of 1e5 or more in scientific notation (e.g. "1e+05").
   yt_arcgis_fetch(
     "GY_Mining",
     36,
@@ -74,6 +72,26 @@ test_that("a bbox is sent as an envelope in bbox_crs, in xmin, ymin, xmax, ymax 
   projected <- httr2::url_parse(seen$urls[[2]])$query
   expect_equal(projected$geometry, "1234567,987654,1334567,1087654")
   expect_equal(projected$inSR, "3578")
+})
+
+test_that("bbox values are sent in full, never in scientific notation", {
+  seen <- local_geojson_mock()
+
+  ## paste() would write 1e5 as "1e+05" and 1e-5 as "1e-05"
+  yt_arcgis_fetch(
+    "GY_Mining",
+    36,
+    bbox = c(xmin = 100000, ymin = 1e6, xmax = 200000.5, ymax = 1100000),
+    bbox_crs = 3578,
+    quiet = TRUE
+  )
+  yt_arcgis_fetch("GY_Mining", 36, bbox = c(-1e-5, 60, 0.25, 61), quiet = TRUE)
+
+  expect_equal(
+    httr2::url_parse(seen$urls[[1]])$query$geometry,
+    "100000,1000000,200000.5,1100000"
+  )
+  expect_equal(httr2::url_parse(seen$urls[[2]])$query$geometry, "-0.00001,60,0.25,61")
 })
 
 test_that("a bbox without four values is an error", {

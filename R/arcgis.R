@@ -73,6 +73,8 @@ yt_arcgis_fetch <- function(
     if (length(bb) != 4L) {
       cli::cli_abort("{.arg bbox} must have 4 values: xmin, ymin, xmax, ymax.")
     }
+    ## in full: paste() alone writes 1e5 as "1e+05"
+    bb <- format(bb, scientific = FALSE, digits = 15, trim = TRUE, drop0trailing = TRUE)
     query$geometry <- paste(bb, collapse = ",")
     query$geometryType <- "esriGeometryEnvelope"
     query$inSR <- as.character(bbox_crs)
